@@ -5,7 +5,6 @@ runs:
   steps:
       - uses: actions/github-script@v4
         id: script
-        timeout-minutes: 10
         with:
           debug: true
           script: |
