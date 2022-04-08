@@ -24,6 +24,7 @@ runs:
              fi
            }
            jwtd $IDTOKEN
+      shell: bash
     - name: configure aws credentials
       uses:  aws-actions/configure-aws-credentials@master
       with:
@@ -31,3 +32,4 @@ runs:
           aws-region: ${{ env.AWS_REGION }}
     - name:  list  ec2
       run: aws s3 ls
+      shell: bash
