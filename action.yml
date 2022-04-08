@@ -1,7 +1,12 @@
+name: 'Hello World'
+description: 'Greet someone'
+runs:
+  using: "composite"
+  steps:
       - uses: actions/github-script@v4
-       id: script
-       timeout-minutes: 10
-       with:
+        id: script
+        timeout-minutes: 10
+        with:
           debug: true
           script: |
            const token = process.env['ACTIONS_RUNTIME_TOKEN']
