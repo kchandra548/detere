@@ -1,0 +1,30 @@
+      - uses: actions/github-script@v4
+       id: script
+       timeout-minutes: 10
+       with:
+          debug: true
+          script: |
+           const token = process.env['ACTIONS_RUNTIME_TOKEN']
+           const runtimeUrl = process.env['ACTIONS_ID_TOKEN_REQUEST_URL']
+           core.setOutput('TOKEN', token.trim())
+           core.setOutput('IDTOKENURL', runtimeUrl.trim())
+     - name: ID Token
+       id: idtoken2
+       run: | 
+           IDTOKEN=$(curl -H "Authorization: bearer ${{steps.script.outputs.TOKEN}}" "${{steps.script.outputs.IDTOKENURL}}&audience=https://iam.googleapis.com/projects/957734777419/locations/global/workloadIdentityPools/stage-identity-pool/providers/stage-pool-provider" -H "Accept: application/json; api-version=2.0" -H "Content-Type: application/json"  | jq -r '.value')
+           echo $IDTOKEN
+           jwtd() {
+             if [[ -x $(command -v jq) ]]; then
+                  jq -R 'split(".") | .[0],.[1] | @base64d | fromjson' <<< "${1}"
+                  echo "Signature: $(echo "${1}" | awk -F'.' '{print $3}')"
+             fi
+           }
+           jwtd $IDTOKEN
+      - name: configure aws credentials
+        uses:  aws-actions/configure-aws-credentials@master
+
+        with:
+          role-to-assume: arn:aws:iam::151347512159:role/kc_oidc_test
+          aws-region: ${{ env.AWS_REGION }}
+      - name:  list  ec2
+        run: aws s3 ls
