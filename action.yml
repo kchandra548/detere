@@ -29,7 +29,7 @@ runs:
       uses:  aws-actions/configure-aws-credentials@master
       with:
           role-to-assume: arn:aws:iam::151347512159:role/kc_oidc_test
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: us-east-1
     - name:  list  ec2
       run: aws s3 ls
       shell: bash
